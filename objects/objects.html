@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Student Management</h2>
+
+    <div class="section">
+        <h3>Insert Student</h3>
+
+        <input type="number" id="studentId" placeholder="Enter ID">
+        <input type="text" id="studentName" placeholder="Enter Name">
+        <input type="number" id="studentAge" placeholder="Enter Age">
+        <input type="text" id="studentCourse" placeholder="Enter Course">
+
+        <input type="number" id="tamil" placeholder="Tamil Mark">
+        <input type="number" id="english" placeholder="English Mark">
+        <input type="number" id="social" placeholder="Social Mark">
+        <input type="number" id="science" placeholder="Science Mark">
+        <input type="number" id="maths" placeholder="Maths Mark">
+
+        <button onclick="insertStudent()">Insert</button>
+    </div>
+
+    <div class="section">
+        <h3>Delete Student</h3>
+
+        <input type="number" id="deleteId" placeholder="Enter Student ID">
+
+        <button onclick="deleteStudent()">Delete</button>
+    </div>
+
+    <div class="section">
+        <h3>Search Student</h3>
+
+        <input type="text" id="searchInput" placeholder="Search anything...">
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Course</th>
+                <th>Tamil</th>
+                <th>English</th>
+                <th>Social</th>
+                <th>Science</th>
+                <th>Maths</th>
+            </tr>
+        </thead>
+
+        <tbody id="studentList"></tbody>
+    </table>
+
+    <script>
+        const students = [
+            {
+                id: 1,
+                name: "Eswar",
+                age: 21,
+                course: "Computer Science",
+                tamil: 85,
+                english: 90,
+                social: 80,
+                science: 88,
+                maths: 95
+            },
+            {
+                id: 2,
+                name: "Arun",
+                age: 22,
+                course: "Information Technology",
+                tamil: 78,
+                english: 85,
+                social: 82,
+                science: 90,
+                maths: 33
+            },
+            {
+                id: 3,
+                name: "Karthik",
+                age: 21,
+                course: "Computer Science",
+                tamil: 90,
+                english: 92,
+                social: 85,
+                science: 7,
+                maths: 77
+            },
+            {
+                id: 4,
+                name: "Rahul",
+                age: 22,
+                course: "Mechanical",
+                tamil: 75,
+                english: 80,
+                social: 78,
+                science: 85,
+                maths: 82
+            },
+            {
+                id: 5,
+                name: "Vijay",
+                age: 20,
+                course: "Civil",
+                tamil: 88,
+                english: 86,
+                social: 90,
+                science: 92,
+                maths: 12
+            }
+        ];
+
+        const studentList = document.getElementById("studentList");
+        const searchInput = document.getElementById("searchInput");
+
+        function detectabove35marks(data) {
+            const above35Students = data.filter(student => student.maths >= 35);
+
+            console.log(
+                "Students with Maths marks above or equal to 35:",
+                above35Students
+            );
+        }
+
+       function displaySubjectAverages(data) {
+    const subjects = ["tamil", "english", "social", "science", "maths"];
+
+    subjects.forEach(subject => {
+        let total = 0;
+        let count = 0;
+
+        data.forEach(student => {
+            if (student[subject] >= 35) {
+                total = total + student[subject];
+                count = count + 1;
+            }
+        });
+
+        let average = 0;
+
+        if (count > 0) {
+            average = total / count;
+        }
+
+        console.log(subject + " Average: " + average.toFixed(2));
+    });
+}
+        function passandfailpercentage(data) {
+            let passCount = 0;
+            let failCount = 0;
+
+            data.forEach(student => {
+
+                if (
+                    student.tamil >= 35 &&
+                    student.english >= 35 &&
+                    student.social >= 35 &&
+                    student.science >= 35 &&
+                    student.maths >= 35
+                ) {
+                    passCount++;
+                } else {
+                    failCount++;
+                }
+            });
+
+            const totalStudents = data.length;
+
+            const passPercentage =
+                totalStudents > 0
+                    ? (passCount / totalStudents) * 100
+                    : 0;
+
+            const failPercentage =
+                totalStudents > 0
+                    ? (failCount / totalStudents) * 100
+                    : 0;
+
+            console.log(
+                "Pass Percentage:",
+                passPercentage.toFixed(2) + "%"
+            );
+
+            console.log(
+                "Fail Percentage:",
+                failPercentage.toFixed(2) + "%"
+            );
+        }
+
+        function topthreetoppers(data) {
+
+            const sortedStudents = [...data].sort((a, b) => {
+
+                const totalA =
+                    a.tamil +
+                    a.english +
+                    a.social +
+                    a.science +
+                    a.maths;
+
+                const totalB =
+                    b.tamil +
+                    b.english +
+                    b.social +
+                    b.science +
+                    b.maths;
+
+                return totalB - totalA;
+            });
+
+            const topThree = sortedStudents.slice(0, 3);
+
+            console.log("Top Three Toppers:", topThree);
+        }
+
+        function displayStudents(data) {
+
+            studentList.innerHTML = "";
+
+            data.forEach(student => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.course}</td>
+                    <td>${student.tamil}</td>
+                    <td>${student.english}</td>
+                    <td>${student.social}</td>
+                    <td>${student.science}</td>
+                    <td>${student.maths}</td>
+                `;
+
+                studentList.append(row);
+            });
+
+            displaySubjectAverages(data);
+            passandfailpercentage(data);
+            topthreetoppers(data);
+        }
+
+        displayStudents(students);
+
+        function insertStudent() {
+
+            const id = document.getElementById("studentId").value;
+            const name = document.getElementById("studentName").value;
+            const age = document.getElementById("studentAge").value;
+            const course = document.getElementById("studentCourse").value;
+
+            const tamil = document.getElementById("tamil").value;
+            const english = document.getElementById("english").value;
+            const social = document.getElementById("social").value;
+            const science = document.getElementById("science").value;
+            const maths = document.getElementById("maths").value;
+
+            if (
+                !id ||
+                !name ||
+                !age ||
+                !course ||
+                !tamil ||
+                !english ||
+                !social ||
+                !science ||
+                !maths
+            ) {
+                alert("Please fill all fields");
+                return;
+            }
+
+            const newStudent = {
+                id: Number(id),
+                name: name,
+                age: Number(age),
+                course: course,
+                tamil: Number(tamil),
+                english: Number(english),
+                social: Number(social),
+                science: Number(science),
+                maths: Number(maths)
+            };
+
+            students.push(newStudent);
+
+            displayStudents(students);
+
+            document.querySelectorAll("input").forEach(input => {
+                input.value = "";
+            });
+        }
+
+        function deleteStudent() {
+
+            const deleteId = Number(
+                document.getElementById("deleteId").value
+            );
+
+            const studentIndex = students.findIndex(
+                student => student.id === deleteId
+            );
+
+            if (studentIndex === -1) {
+                alert("Student not found");
+                return;
+            }
+
+            students.splice(studentIndex, 1);
+
+            displayStudents(students);
+
+            document.getElementById("deleteId").value = "";
+        }
+
+        searchInput.addEventListener("input", () => {
+
+            const searchValue =
+                searchInput.value.toLowerCase().trim();
+
+            if (searchValue === "") {
+                displayStudents(students);
+                return;
+            }
+
+            const filteredStudents = students.filter(student =>
+                Object.values(student).some(value =>
+                    String(value)
+                        .toLowerCase()
+                        .includes(searchValue)
+                )
+            );
+
+            displayStudents(filteredStudents);
+        });
+
+    </script>
+
+</body>
+</html>
